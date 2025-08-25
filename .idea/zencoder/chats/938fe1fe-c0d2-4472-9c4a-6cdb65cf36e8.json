@@ -1,0 +1,83 @@
+{
+    "checksum": "c2335cf17324a35a2198ce375c1e29830433148992762ddcd9a5862335ce162b",
+    "data": {
+    "id": "938fe1fe-c0d2-4472-9c4a-6cdb65cf36e8",
+    "createdAt": 1755461872821,
+    "updatedAt": 1755461878815,
+    "title": "my frontend running on http://localhost:5173/si...",
+    "messages": [
+        {
+            "id": "f3a8f9da-b60e-478e-bb02-fb98e3903092",
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "my frontend running on http://localhost:5173/signup and other apis running on port 5173 connect it with backend"
+                }
+            ],
+            "context": {
+                "currentFile": {
+                    "path": "billingsoftware/src/main/java/com/parth/billingsoftware/config/SecurityConfig.java",
+                    "fsPath": "C:/Users/TUF F15/Desktop/billingsoftware/billingsoftware/src/main/java/com/parth/billingsoftware/config/SecurityConfig.java",
+                    "sources": [
+                        "opened_tab"
+                    ],
+                    "content": "package com.parth.billingsoftware.config;\n\nimport com.parth.billingsoftware.filter.JwtRequestFilter;\nimport com.parth.billingsoftware.service.impl.AppUserDetailService;\nimport org.springframework.context.annotation.Bean;\nimport org.springframework.context.annotation.Configuration;\nimport org.springframework.security.authentication.AuthenticationManager;\nimport org.springframework.security.authentication.ProviderManager;\nimport org.springframework.security.authentication.dao.DaoAuthenticationProvider;\nimport org.springframework.security.config.Customizer;\nimport org.springframework.security.config.annotation.web.builders.HttpSecurity;\nimport org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;\nimport org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;\nimport org.springframework.security.config.http.SessionCreationPolicy;\nimport org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;\nimport org.springframework.security.crypto.password.PasswordEncoder;\nimport org.springframework.security.web.SecurityFilterChain;\nimport org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;\nimport org.springframework.web.cors.CorsConfiguration;\nimport org.springframework.web.cors.CorsConfigurationSource;\nimport org.springframework.web.cors.UrlBasedCorsConfigurationSource;\n\nimport java.util.List;\n\n@Configuration\n@EnableWebSecurity\npublic class SecurityConfig {\n    private final JwtRequestFilter jwtRequestFilter;\n    private final AppUserDetailService appUserDetailsService;\n\n    public SecurityConfig(JwtRequestFilter jwtRequestFilter, AppUserDetailService appUserDetailsService) {\n        this.jwtRequestFilter = jwtRequestFilter;\n        this.appUserDetailsService = appUserDetailsService;\n    }\n\n    @Bean\n    public PasswordEncoder passwordEncoder() {\n        return new BCryptPasswordEncoder();\n    }\n\n    @Bean\n    public AuthenticationManager authenticationManager() {\n        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();\n        authProvider.setUserDetailsService(appUserDetailsService);\n        authProvider.setPasswordEncoder(passwordEncoder());\n        return new ProviderManager(authProvider);\n    }\n\n    @Bean\n    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {\n        http.cors(Customizer.withDefaults())\n                .csrf(AbstractHttpConfigurer::disable)\n                .authorizeHttpRequests(auth -> auth\n                        // Public endpoints\n                        .requestMatchers(\"/api/v1.0/login\", \"/api/v1.0/encode\").permitAll()\n                        // User & Admin accessible APIs\n                        .requestMatchers(\"/api/v1.0/category\",\n                                \"/api/v1.0/items\",\n                                \"/api/v1.0/orders\",\n                                \"/api/v1.0/payment\",\n                                \"/api/v1.0/dashboard\").hasAnyRole(\"USER\", \"ADMIN\")\n                        // Admin only APIs\n                        .requestMatchers(\"/api/v1.0/admin/**\").hasRole(\"ADMIN\")\n                        // Any other request must be authenticated\n                        .anyRequest().authenticated()\n                )\n                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))\n                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);\n\n        return http.build();\n    }\n\n    @Bean\n    public CorsConfigurationSource corsConfigurationSource() {\n        CorsConfiguration configuration = new CorsConfiguration();\n        configuration.setAllowedOrigins(List.of(\"http://localhost:5173/\")); // frontend origin\n        configuration.setAllowedMethods(List.of(\"GET\", \"POST\", \"PUT\", \"DELETE\", \"OPTIONS\"));\n        configuration.setAllowedHeaders(List.of(\"*\"));\n        configuration.setAllowCredentials(true);\n\n        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();\n        source.registerCorsConfiguration(\"/**\", configuration);\n        return source;\n    }\n}\n",
+                    "language": "java"
+                },
+                "codebaseEnabled": true
+            },
+            "createdAt": 1755461872902,
+            "isInternal": false,
+            "rawContent": {
+                "type": "doc",
+                "content": [
+                    {
+                        "type": "paragraph",
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "my frontend running on http://localhost:5173/signup and other apis running on port 5173 connect it with backend"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "autoAppliedRules": []
+        },
+        {
+            "id": "5d532fcc-f0a1-4955-8635-2a7692220342",
+            "role": "system",
+            "content": [
+                {
+                    "type": "errorText",
+                    "text": "Rate limit exceeded. You can try again on August 19 at 01:25.",
+                    "actions": [
+                        {
+                            "type": "upgradePlan",
+                            "waitSeconds": 85060
+                        },
+                        {
+                            "type": "externalAction",
+                            "title": "Regenerate",
+                            "action": "regenerateLastAnswer"
+                        }
+                    ]
+                }
+            ],
+            "createdAt": 1755461878815,
+            "isInternal": false
+        }
+    ],
+    "isAgent": true,
+    "isCustomAgent": false,
+    "isUnitTestsAgent": false,
+    "isE2EAgent": false,
+    "isQnaAgent": false,
+    "isRepoInfoAgent": false,
+    "isClaudeCode": false,
+    "isZencoderCli": false,
+    "autoApply": true,
+    "model": "default"
+}
+}
